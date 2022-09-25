@@ -1,6 +1,31 @@
 require 'rails_helper'
 
 RSpec.describe "Shorteners Controller", type: :request do
+  describe "GET /show" do
+    context 'when the short_code is correct' do
+      let(:shortener) { create(:shortener) }
+
+      it 'redirects to url(@short_url)' do
+        get "/david/#{shortener.short_code}"
+
+        expect(assigns(:short_url).url).to eq(shortener.url)
+        response.should redirect_to(assigns(:short_url).url)
+      end
+    end
+
+    context 'when short_code is not correct' do
+      it 'redirects to url(@short_url)' do
+        get "/david/ashdm5"
+
+        payload = JSON.parse(response.body)
+
+        expect(payload).not_to be_empty
+        expect(payload['error']).to eq('Not Found')
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
+
   describe "POST /create" do
     before do
       allow(AlexaService).to receive(:cal_rank).and_return(100)

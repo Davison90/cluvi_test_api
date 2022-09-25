@@ -10,7 +10,7 @@ class AlexaService
     }
     alexa_url = 'https://awis.api.alexa.com/api?Action=UrlInfo&ResponseGroup=Rank&Url=' + url
     response = RestClient.get(alexa_url, headers)
-    
+
     extract_value(response)
   end
 
